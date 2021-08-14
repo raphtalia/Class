@@ -1,0 +1,28 @@
+{
+  "name": "Class - Testing",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+
+      "Class": {
+        "$path": "."
+      }
+    },
+
+    "TestService": {
+      "$className": "TestService",
+
+      "$properties": {
+        "ExecuteWithStudioRun": true
+      },
+      "runTests": {
+        "$path": "testRunner/runTests.server.lua"
+      },
+      "TestEZ": {
+        "$path": "modules/testez"
+      }
+    }
+  }
+}
