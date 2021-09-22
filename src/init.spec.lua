@@ -16,6 +16,10 @@ return function()
 
             expect(classB).to.be.a("table")
             expect(classB():test()).to.equal(5)
+
+            -- Deep inheritance
+            local classC = Class():Extend(classB)
+            expect(classC():test()).to.equal(5)
         end)
     end)
 
@@ -60,6 +64,17 @@ return function()
 
         it("should be able to access RBX methods", function()
             expect(Class()():WrapInstance(instance):GetMethod("Clone")).to.be.a("function")
+        end)
+
+        it("should be able to class check", function()
+            expect(Class()():IsA()).to.equal(false)
+
+            expect(Class("foobar")():IsA("foobar")).to.equal(true)
+
+            local extendedClass = Class("foo"):Extend(Class("bar"))
+            expect(extendedClass():IsA("foo")).to.equal(true)
+            expect(extendedClass():IsA("bar")).to.equal(true)
+            expect(extendedClass():IsA("bar", true)).to.equal(false)
         end)
     end)
 end

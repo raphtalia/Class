@@ -29,7 +29,7 @@ function Object:GetWrappedInstance()
     return rawget(self, "_wrappedInstance")
 end
 
-function Object:WrapInstance(instance)
+function Object:WrapInstance(instance: Instance)
     rawset(self, "_wrappedInstance", instance)
     return self
 end
@@ -40,7 +40,7 @@ function Object:UnwrapInstance()
 end
 
 -- Methods for accessing the wrapped instance
-function Object:GetAttribute(attributeName)
+function Object:GetAttribute(attributeName: string)
     local instance = rawget(self, "_wrappedInstance")
     if instance then
         return instance:GetAttribute(attributeName)
@@ -49,7 +49,7 @@ function Object:GetAttribute(attributeName)
     end
 end
 
-function Object:SetAttribute(attributeName, value)
+function Object:SetAttribute(attributeName: string, value: any)
     local instance = rawget(self, "_wrappedInstance")
     if instance then
         return instance:SetAttribute(attributeName, value)
@@ -58,7 +58,7 @@ function Object:SetAttribute(attributeName, value)
     end
 end
 
-function Object:GetMethod(methodName)
+function Object:GetMethod(methodName: string)
     local wrappedMethods = rawget(self, "_wrappedMethods")
     local wrappedMethod = wrappedMethods[methodName]
 
@@ -74,7 +74,7 @@ function Object:GetMethod(methodName)
     return wrappedMethod
 end
 
-function Object:SetProperty(propertyName, value)
+function Object:SetProperty(propertyName: string, value: any)
     local instance = rawget(self, "_wrappedInstance")
     if instance then
         instance[propertyName] = value
@@ -84,7 +84,7 @@ function Object:SetProperty(propertyName, value)
 end
 
 -- Getting properties & events are identical, separate methods for clarity
-function Object:GetProperty(propertyName)
+function Object:GetProperty(propertyName: string)
     local instance = rawget(self, "_wrappedInstance")
     if instance then
         return instance[propertyName]
@@ -93,12 +93,34 @@ function Object:GetProperty(propertyName)
     end
 end
 
-function Object:GetEvent(eventName)
+function Object:GetEvent(eventName: string)
     local instance = rawget(self, "_wrappedInstance")
     if instance then
         return instance[eventName]
     else
         error("Attempt to access attribute of an object that has not been wrapped", 2)
+    end
+end
+
+function Object:IsA(className: string, noRecursion: boolean)
+    if className == nil then
+        return false
+    end
+
+    if noRecursion then
+        return rawget(self, "_class").ClassName == className
+    else
+        local class = rawget(self, "_class")
+        while true do
+            if class.ClassName == className then
+                return true
+            else
+                class = class._superclass
+                if not class then
+                    return false
+                end
+            end
+        end
     end
 end
 

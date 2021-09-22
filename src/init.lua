@@ -41,9 +41,11 @@ function Class:Extend(class)
     end
 end
 
-return function()
+return function(className: string?)
     local self = {
         _superclass = nil,
+
+        ClassName = className,
     }
 
     return setmetatable(self, CLASS_METATABLE)

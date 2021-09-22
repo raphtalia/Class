@@ -5,7 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Class = require(ReplicatedStorage.Class)
 
 -- New class constructor
-local myClass = Class()
+local myClass = Class("className")
 
 function myClass:init(name)
 	local part = Instance.new("Part")
@@ -40,7 +40,13 @@ local myExtendedClass = Class():Extend(myClass)
 -- Object constructor
 local myObject = myExtendedClass("testObject")
 
-print(myObject:test())
+-- Class checking with inheritance
+print(myObject:IsA("className")) --> true
+
+-- Class checking without inheritance
+print(myObject:IsA("className", true)) --> false
+
+print(myObject:test()) --> 5
 -- Returns the value of an attribute of a wrapped Instance
-print(myObject:GetAttribute("test"))
+print(myObject:GetAttribute("test")) --> 5
 ```
