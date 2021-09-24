@@ -41,12 +41,29 @@ function Class:Extend(class)
     end
 end
 
-return function(className: string?)
-    local self = {
+local ClassModule = {}
+ClassModule.__index = ClassModule
+
+function ClassModule:__call(className: string?)
+    local class = {
         _superclass = nil,
 
         ClassName = className,
     }
 
-    return setmetatable(self, CLASS_METATABLE)
+    return setmetatable(class, CLASS_METATABLE)
 end
+
+function ClassModule.isClass(class: any): boolean
+    if type(class) == "table" then
+        if getmetatable(class) == CLASS_METATABLE then
+            return true
+        end
+    end
+    return false
+end
+
+-- Forwards the isObject() method
+ClassModule.isObject = Object.isObject
+
+return setmetatable(ClassModule, ClassModule)

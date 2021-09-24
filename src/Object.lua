@@ -14,7 +14,7 @@ function OBJECT_METATABLE:__index(i)
         return v
     end
 
-    return rawget(self, "_class")[i]
+    return rawget(self, "_className")[i]
 end
 
 function OBJECT_METATABLE:__newindex(i, v)
@@ -22,7 +22,7 @@ function OBJECT_METATABLE:__newindex(i, v)
 end
 
 function Object:GetExtendedClass()
-    return getmetatable(rawget(self, "_class")).__index
+    return getmetatable(rawget(self, "_className")).__index
 end
 
 function Object:GetWrappedInstance()
@@ -108,9 +108,9 @@ function Object:IsA(className: string, noRecursion: boolean)
     end
 
     if noRecursion then
-        return rawget(self, "_class").ClassName == className
+        return rawget(self, "_className").ClassName == className
     else
-        local class = rawget(self, "_class")
+        local class = rawget(self, "_className")
         while true do
             if class.ClassName == className then
                 return true
@@ -124,9 +124,12 @@ function Object:IsA(className: string, noRecursion: boolean)
     end
 end
 
-return function(class)
-    local self = {
-        _class = class,
+local ObjectModule = {}
+ObjectModule.__index = ObjectModule
+
+function ObjectModule:__call(class)
+    local object = {
+        _className = class,
 
         _props = {},
 
@@ -134,5 +137,16 @@ return function(class)
         _wrappedMethods = {},
     }
 
-    return setmetatable(self, OBJECT_METATABLE)
+    return setmetatable(object, OBJECT_METATABLE)
 end
+
+function ObjectModule.isObject(object: any): boolean
+    if type(object) == "table" then
+        if getmetatable(object) == OBJECT_METATABLE then
+            return true
+        end
+    end
+    return false
+end
+
+return setmetatable(ObjectModule, ObjectModule)

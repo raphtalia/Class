@@ -49,4 +49,14 @@ print(myObject:IsA("className", true)) --> false
 print(myObject:test()) --> 5
 -- Returns the value of an attribute of a wrapped Instance
 print(myObject:GetAttribute("test")) --> 5
+
+-- Typechecking
+print(Class.isClass(myClass)) --> true
+print(Class.isClass(myExtendedClass)) --> true
+print(Class.isClass(myObject)) --> false
+
+print(Class.isObject(myClass)) --> false
+print(Class.isObject(myExtendedClass)) --> false
+print(Class.isObject(myObject)) --> true
+
 ```
