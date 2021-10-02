@@ -1,5 +1,9 @@
 # Class
 
+TODO: Write actual documentation.
+
+## Example 1
+
 ```lua
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Class = require(ReplicatedStorage.Class)
@@ -50,6 +54,9 @@ print(myObject:test()) --> 5
 -- Returns the value of an attribute of a wrapped Instance
 print(myObject:GetAttribute("test")) --> 5
 
+-- Calls a method of a wrapped Instance
+myObject:GetMethod("Touched")()
+
 -- Typechecking
 print(Class.isClass(myClass)) --> true
 print(Class.isClass(myExtendedClass)) --> true
@@ -59,4 +66,26 @@ print(Class.isObject(myClass)) --> false
 print(Class.isObject(myExtendedClass)) --> false
 print(Class.isObject(myObject)) --> true
 
+```
+
+## Example 2
+
+```lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Class = require(ReplicatedStorage.Class)
+
+-- New class constructor
+local myClass = Class("className")
+
+function myClass:init(name)
+	local part = Instance.new("Part")
+
+	-- Wraps the object around a Instance
+	self:WrapInstance(part, {
+		[Class.Attributes] = { "Name" },
+		[Class.Events] = { "Touched" },
+		[Class.Methods] = { "Clone" },
+		[Class.Properties] = { "Name"},
+	})
+end
 ```

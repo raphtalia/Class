@@ -1,3 +1,4 @@
+local Symbols = require(script.Symbols)
 local Object = require(script.Object)
 
 local Class = {}
@@ -53,6 +54,11 @@ function ClassModule:__call(className: string?)
 
     return setmetatable(class, CLASS_METATABLE)
 end
+
+ClassModule.Attributes = Symbols.Attributes
+ClassModule.Events = Symbols.Events
+ClassModule.Methods = Symbols.Methods
+ClassModule.Properties = Symbols.Properties
 
 function ClassModule.isClass(class: any): boolean
     if type(class) == "table" then

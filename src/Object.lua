@@ -1,3 +1,5 @@
+local Symbols = require(script.Parent.Symbols)
+
 local Object = {}
 local OBJECT_METATABLE = {}
 
@@ -14,6 +16,17 @@ function OBJECT_METATABLE:__index(i)
         return v
     end
 
+    local wrapped = rawget(self, "_wrapped")
+    if table.find(wrapped.Attributes, i) then
+        return self:GetAttribute(i)
+    elseif table.find(wrapped.Events, i) then
+        return self:GetEvent(i)
+    elseif table.find(wrapped.Methods, i) then
+        return self:GetMethod(i)
+    elseif table.find(wrapped.Properties, i) then
+        return self:GetProperty(i)
+    end
+
     return rawget(self, "_className")[i]
 end
 
@@ -25,12 +38,103 @@ function Object:GetExtendedClass()
     return getmetatable(rawget(self, "_className")).__index
 end
 
+-- Instance wrapping
+function Object:WrapAttribute(attributeName)
+    local attributes = rawget(self, "_wrapped").Attributes
+    if not table.find(attributes, attributeName) then
+        table.insert(attributes, attributeName)
+    end
+    return self
+end
+
+function Object:UnwrapAttribute(attributeName)
+    local attributes = rawget(self, "_wrapped").Attributes
+    local i = table.find(attributes, attributeName)
+    if i then
+        table.remove(attributes, i)
+    end
+    return self
+end
+
+function Object:WrapMethod(methodName)
+    local methods = rawget(self, "_wrapped").Methods
+    if not table.find(methods, methodName) then
+        table.insert(methods, methodName)
+    end
+    return self
+end
+
+function Object:UnwrapMethod(methodName)
+    local methods = rawget(self, "_wrapped").Methods
+    local i = table.find(methods, methodName)
+    if i then
+        table.remove(methods, i)
+    end
+    return self
+end
+
+function Object:WrapProperty(propertyName)
+    local properties = rawget(self, "_wrapped").Properties
+    if not table.find(properties, propertyName) then
+        table.insert(properties, propertyName)
+    end
+    return self
+end
+
+function Object:UnwrapProperty(propertyName)
+    local properties = rawget(self, "_wrapped").Properties
+    local i = table.find(properties, propertyName)
+    if i then
+        table.remove(properties, i)
+    end
+    return self
+end
+
+function Object:WrapEvent(eventName)
+    local events = rawget(self, "_wrapped").Events
+    if not table.find(events, eventName) then
+        table.insert(events, eventName)
+    end
+    return self
+end
+
+function Object:UnwrapEvent(eventName)
+    local events = rawget(self, "_wrapped").Events
+    local i = table.find(events, eventName)
+    if i then
+        table.remove(events, i)
+    end
+    return self
+end
+
 function Object:GetWrappedInstance()
     return rawget(self, "_wrappedInstance")
 end
 
-function Object:WrapInstance(instance: Instance)
+function Object:WrapInstance(instance: Instance, wrapOptions)
     rawset(self, "_wrappedInstance", instance)
+
+    if wrapOptions then
+        local wrapped = rawget(self, "_wrapped")
+        local attributes = wrapOptions[Symbols.Attributes]
+        local events = wrapOptions[Symbols.Events]
+        local methods = wrapOptions[Symbols.Methods]
+        local properties = wrapOptions[Symbols.Properties]
+
+        if attributes then
+            wrapped.Attributes = attributes
+        end
+        if events then
+            wrapped.Events = events
+        end
+        if methods then
+            wrapped.Methods = methods
+        end
+        if properties then
+            wrapped.Properties = properties
+        end
+    end
+
     return self
 end
 
@@ -135,6 +239,12 @@ function ObjectModule:__call(class)
 
         _wrappedInstance = nil,
         _wrappedMethods = {},
+        _wrapped = {
+            Attributes = {},
+            Methods = {},
+            Properties = {},
+            Events = {},
+        },
     }
 
     return setmetatable(object, OBJECT_METATABLE)

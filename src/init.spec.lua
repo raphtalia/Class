@@ -55,15 +55,56 @@ return function()
             obj:SetAttribute("test", "test")
 
             expect(obj:GetAttribute("test")).to.equal("test")
+
+            obj:WrapAttribute("test")
+
+            expect(obj.test).to.equal("test")
         end)
 
         it("should be able to access RBX properties and events", function()
-            expect(Class()():WrapInstance(instance):GetProperty("Name")).to.be.a("string")
-            expect(typeof(Class()():WrapInstance(instance):GetEvent("Touched")) == "RBXScriptSignal").to.equal(true)
+            local obj = Class()():WrapInstance(instance)
+            expect(obj:GetProperty("Name")).to.be.a("string")
+            expect(typeof(obj:GetEvent("Touched")) == "RBXScriptSignal").to.equal(true)
+
+            obj:WrapProperty("Name")
+            obj:WrapEvent("Touched")
+
+            expect(obj.Name).to.be.a("string")
+            expect(typeof(obj.Touched) == "RBXScriptSignal").to.equal(true)
         end)
 
         it("should be able to access RBX methods", function()
-            expect(Class()():WrapInstance(instance):GetMethod("Clone")).to.be.a("function")
+            local obj = Class()():WrapInstance(instance)
+            expect(obj:GetMethod("Clone")).to.be.a("function")
+
+            obj:WrapMethod("Clone")
+
+            expect(obj.Clone).to.be.a("function")
+        end)
+
+        it("should be able to find wrapped indexes", function()
+            local obj = Class()():WrapInstance(instance, {
+                [Class.Attributes] = {
+                    "wrappedIndexAttribute",
+                },
+                [Class.Events] = {
+                    "Touched",
+                },
+                [Class.Methods] = {
+                    "Clone",
+                },
+                [Class.Properties] = {
+                    "Name",
+                },
+            })
+
+            expect(obj.wrappedIndexAttribute).to.be.equal(nil)
+            obj.wrappedIndexAttribute = 5
+            expect(obj.wrappedIndexAttribute).to.be.equal(5)
+
+            expect(typeof(obj.Touched) == "RBXScriptSignal").to.be.equal(true)
+            expect(obj.Clone).to.be.a("function")
+            expect(obj.Name).to.be.a("string")
         end)
 
         it("should be able to class check", function()
