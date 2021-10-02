@@ -101,10 +101,15 @@ return function()
             expect(obj.wrappedIndexAttribute).to.be.equal(nil)
             obj.wrappedIndexAttribute = 5
             expect(obj.wrappedIndexAttribute).to.be.equal(5)
+            expect(obj:GetWrappedInstance():GetAttribute("wrappedIndexAttribute")).to.be.equal(5)
 
             expect(typeof(obj.Touched) == "RBXScriptSignal").to.be.equal(true)
             expect(obj.Clone).to.be.a("function")
             expect(obj.Name).to.be.a("string")
+
+            obj.Name = "wrapped"
+            expect(obj.Name).to.be.equal("wrapped")
+            expect(obj:GetWrappedInstance().Name).to.be.equal("wrapped")
         end)
 
         it("should be able to class check", function()

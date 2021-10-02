@@ -31,6 +31,13 @@ function OBJECT_METATABLE:__index(i)
 end
 
 function OBJECT_METATABLE:__newindex(i, v)
+    local wrapped = rawget(self, "_wrapped")
+    if table.find(wrapped.Attributes, i) then
+        return self:SetAttribute(i, v)
+    elseif table.find(wrapped.Properties, i) then
+        return self:SetProperty(i, v)
+    end
+
     rawget(self, "_props")[i] = v
 end
 
