@@ -28,6 +28,25 @@ return function()
             expect(Class()()).to.be.a("table")
         end)
 
+        it("should be able to access superclasses", function()
+            local classA = Class()
+            local classB = Class():Extend(classA)
+            local classC = Class():Extend(classB)
+
+            local objA = classA()
+            local objB = classB()
+            local objC = classC()
+
+            expect(objA:GetClass()).to.equal(classA)
+
+            expect(objB:GetClass()).to.equal(classB)
+            expect(objB:GetClass():GetExtendedClass()).to.equal(classA)
+
+            expect(objC:GetClass()).to.equal(classC)
+            expect(objC:GetClass():GetExtendedClass()).to.equal(classB)
+            expect(objC:GetClass():GetExtendedClass():GetExtendedClass()).to.equal(classA)
+        end)
+
         it("should call init methods", function()
             local class = Class()
 

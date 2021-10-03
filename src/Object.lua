@@ -27,7 +27,7 @@ function OBJECT_METATABLE:__index(i)
         return self:GetProperty(i)
     end
 
-    return rawget(self, "_className")[i]
+    return rawget(self, "_class")[i]
 end
 
 function OBJECT_METATABLE:__newindex(i, v)
@@ -41,8 +41,8 @@ function OBJECT_METATABLE:__newindex(i, v)
     rawget(self, "_props")[i] = v
 end
 
-function Object:GetExtendedClass()
-    return getmetatable(rawget(self, "_className")).__index
+function Object:GetClass()
+    return rawget(self, "_class")
 end
 
 -- Instance wrapping
@@ -219,9 +219,9 @@ function Object:IsA(className: string, noRecursion: boolean)
     end
 
     if noRecursion then
-        return rawget(self, "_className").ClassName == className
+        return rawget(self, "_class").ClassName == className
     else
-        local class = rawget(self, "_className")
+        local class = rawget(self, "_class")
         while true do
             if class.ClassName == className then
                 return true
@@ -240,7 +240,7 @@ ObjectModule.__index = ObjectModule
 
 function ObjectModule:__call(class)
     local object = {
-        _className = class,
+        _class = class,
 
         _props = {},
 

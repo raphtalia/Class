@@ -42,6 +42,10 @@ function Class:Extend(class)
     end
 end
 
+function Class:GetExtendedClass()
+    return rawget(self, "_superclass")
+end
+
 local ClassModule = {}
 ClassModule.__index = ClassModule
 
