@@ -55,7 +55,7 @@ print(myObject:test()) --> 5
 print(myObject:GetAttribute("test")) --> 5
 
 -- Calls a method of a wrapped Instance
-myObject:GetMethod("Touched")()
+myObject:GetMethod("Clone")()
 
 -- Typechecking
 print(Class.isClass(myClass)) --> true
