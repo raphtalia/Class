@@ -1,0 +1,13 @@
+title = "Class"
+
+gitRepoUrl = "https://github.com/raphtalia/Class"
+gitSourceBranch = "main"
+
+classOrder = [
+    "Classes",
+    "Class",
+    "Object",
+]
+
+[footer]
+copyright = "Copyright © 2021 raphtalia"
