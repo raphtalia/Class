@@ -246,7 +246,19 @@ function Object:WrapInstance(instance: Instance, wrapOptions)
         local properties = wrapOptions[Symbols.Properties]
 
         if attributes then
-            wrapped.Attributes = attributes
+            wrapped.Attributes = {}
+
+            for key, value in pairs(attributes) do
+                local keyType = type(key)
+
+                if keyType == "string" then
+                    instance:SetAttribute(key, value)
+
+                    table.insert(wrapped.Attributes, key)
+                elseif keyType == "number" then
+                    table.insert(wrapped.Attributes, value)
+                end
+            end
         end
         if events then
             wrapped.Events = events
@@ -255,7 +267,19 @@ function Object:WrapInstance(instance: Instance, wrapOptions)
             wrapped.Methods = methods
         end
         if properties then
-            wrapped.Properties = properties
+            wrapped.Properties = {}
+
+            for key, value in pairs(properties) do
+                local keyType = type(key)
+
+                if keyType == "string" then
+                    instance:SetProperty(key, value)
+
+                    table.insert(wrapped.Properties, key)
+                elseif keyType == "number" then
+                    table.insert(wrapped.Properties, value)
+                end
+            end
         end
     end
 
