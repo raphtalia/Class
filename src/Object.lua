@@ -273,7 +273,7 @@ function Object:WrapInstance(instance: Instance, wrapOptions)
                 local keyType = type(key)
 
                 if keyType == "string" then
-                    instance:SetProperty(key, value)
+                    instance[key] = value
 
                     table.insert(wrapped.Properties, key)
                 elseif keyType == "number" then
